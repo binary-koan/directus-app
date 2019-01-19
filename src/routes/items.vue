@@ -204,7 +204,7 @@ export default {
       const fields = this.$store.state.collections[this.collection].fields;
       return Object.values(fields).map(field => ({
         ...field,
-        name: this.$helpers.formatTitle(field.field)
+        name: this.$t(`collections-${field.collection}-fields-${field.field}`)
       }));
     },
     batchURL() {

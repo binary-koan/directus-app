@@ -6,7 +6,7 @@
           <template v-if="hideLabel === false">
             <div class="label">
               <component :is="fieldset ? 'legend' : 'label'" :for="field.field">
-                {{ field.name || $helpers.formatTitle(field.field)
+                {{ field.name || $t(`collections-${field.collection}-fields-${field.field}`)
                 }}<i
                   v-tooltip="$t('required')"
                   class="material-icons"

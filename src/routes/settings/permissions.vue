@@ -251,7 +251,7 @@ export default {
             const fields = keyBy(
               fieldsArray.map(field => ({
                 ...field,
-                name: formatTitle(field.field)
+                name: this.$t(`collections-${field.collection}-fields-${field.field}`)
               })),
               "field"
             );
@@ -273,7 +273,7 @@ export default {
         fields: keyBy(
           fieldsRes.data.map(field => ({
             ...field,
-            name: formatTitle(field.field)
+            name: this.$t(`collections-${field.collection}-fields-${field.field}`)
           })),
           "field"
         )

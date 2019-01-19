@@ -14,10 +14,12 @@ import _ from "lodash";
 import api from "../../../api";
 
 export function addField({ commit }, { collection, field }) {
+  updateFieldTranslations(field)
   commit(ADD_FIELD, { collection, field });
 }
 
 export function updateField({ commit }, { collection, field }) {
+  updateFieldTranslations(field)
   commit(UPDATE_FIELD, { collection, field });
 }
 
@@ -41,25 +43,7 @@ export async function getCollections({ commit }) {
    * messages so the app can render it based on the current language with the
    * regular $t() function eg $t('collections-about')
    */
-
-  _.forEach(collections, collection => {
-    if (_.isEmpty(collection.translation)) {
-      // If translations haven't been setup, we're using the title formatter
-      Object.keys(availableLanguages).forEach(locale => {
-        i18n.mergeLocaleMessage(locale, {
-          [`collections-${collection.collection}`]: formatTitle(
-            collection.collection
-          )
-        });
-      });
-    } else {
-      _.forEach(collection.translation, (value, locale) => {
-        i18n.mergeLocaleMessage(locale, {
-          [`collections-${collection.collection}`]: value
-        });
-      });
-    }
-  });
+  _.forEach(collections, updateTranslations);
 
   /*
    * directus_settings uses a different format for the values. Instead of
@@ -82,21 +66,7 @@ export async function getCollections({ commit }) {
 }
 
 export function addCollection({ commit }, collection) {
-  if (!_.isEmpty(collection.translation)) {
-    _.forEach(collection.translation, (value, locale) => {
-      i18n.mergeLocaleMessage(locale, {
-        [`collections-${collection.collection}`]: value
-      });
-    });
-  } else {
-    Object.keys(availableLanguages).forEach(locale => {
-      i18n.mergeLocaleMessage(locale, {
-        [`collections-${collection.collection}`]: formatTitle(
-          collection.collection
-        )
-      });
-    });
-  }
+  updateTranslations(collection);
   commit(ADD_COLLECTION, collection);
 }
 
@@ -105,5 +75,49 @@ export function removeCollection({ commit }, collection) {
 }
 
 export function updateCollection({ commit }, { collection, edits }) {
+  updateTranslations(collection);
   commit(UPDATE_COLLECTION, { collection, edits });
+}
+
+function updateTranslations(collection) {
+  updateCollectionTranslations(collection);
+  _.forEach(collection.fields, updateFieldTranslations);
+}
+
+function updateCollectionTranslations(collection) {
+  if (_.isEmpty(collection.translation)) {
+    // If translations haven't been setup, we're using the title formatter
+    Object.keys(availableLanguages).forEach(locale => {
+      i18n.mergeLocaleMessage(locale, {
+        [`collections-${collection.collection}`]: formatTitle(
+          collection.collection
+        )
+      });
+    });
+  } else {
+    _.forEach(collection.translation, (value, locale) => {
+      i18n.mergeLocaleMessage(locale, {
+        [`collections-${collection.collection}`]: value
+      });
+    });
+  }
+}
+
+function updateFieldTranslations(field) {
+  if (_.isEmpty(field.translation)) {
+    // If translations haven't been setup, we're using the title formatter
+    Object.keys(availableLanguages).forEach(locale => {
+      i18n.mergeLocaleMessage(locale, {
+        [`collections-${field.collection}-fields-${
+          field.field
+        }`]: formatTitle(field.field)
+      });
+    });
+  } else {
+    _.forEach(JSON.parse(field.translation), (value, locale) => {
+      i18n.mergeLocaleMessage(locale, {
+        [`collections-${field.collection}-fields-${field.field}`]: value
+      });
+    });
+  }
 }

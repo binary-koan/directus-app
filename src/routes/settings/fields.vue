@@ -41,7 +41,7 @@
             <div class="drag"><i class="material-icons">drag_handle</i></div>
             <div class="inner row" @click.stop="startEditingField(field)">
               <div>
-                {{ $helpers.formatTitle(field.field) }}
+                {{ $t(`collections-${field.collection}-fields-${field.field}`) }}
                 <i
                   v-tooltip="$t('required')"
                   class="material-icons required"
@@ -581,7 +581,7 @@ export default {
           vm.$data.directusFields = keyBy(
             directusFields.map(field => ({
               ...field,
-              name: formatTitle(field.field),
+              name: vm.$t(`collections-${field.collection}-fields-${field.field}`),
               note: vm.$t("note_" + field.field)
             })),
             "field"
@@ -594,7 +594,7 @@ export default {
           vm.$data.fields = fields
             .map(field => ({
               ...field,
-              name: formatTitle(field.field)
+              name: vm.$t(`collections-${field.collection}-fields-${field.field}`)
             }))
             .sort((a, b) => {
               if (a.sort == b.sort) return 0;

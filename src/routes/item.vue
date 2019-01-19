@@ -483,7 +483,7 @@ export default {
 
       return mapValues(fields, field => ({
         ...field,
-        name: formatTitle(field.field)
+        name: this.$t(`collections-${field.collection}-fields-${field.field}`)
       }));
     }
   },

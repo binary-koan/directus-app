@@ -156,7 +156,7 @@ export default {
       return (
         this.$lodash.mapValues(fields, field => ({
           ...field,
-          name: this.$helpers.formatTitle(field.field)
+          name: this.$t(`collections-${field.collection}-fields-${field.field}`)
         })) || {}
       );
     },
